@@ -18,7 +18,7 @@ function Preloader(props) {
 
   return (
     <div className={classes.root}>
-      <CircularProgress />Идет загрузка
+      <CircularProgress />Идет загрузка...
     </div>
   );
 }
