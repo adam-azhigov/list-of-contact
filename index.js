@@ -1,18 +1,16 @@
-require('dotenv').config()
-const cors = require('cors')
-const express = require("express")
-const mongoose = require("mongoose")
-const router = require("./routes/index")
+require("dotenv").config();
+const cors = require("cors");
+const express = require("express");
+const mongoose = require("mongoose");
+const router = require("./routes/index");
 
+const app = express();
 
-const app = express()
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(express.json())
-app.use(cors())
-app.use(express.urlencoded({extended: true}))
-
-app.use(router)
-
+app.use(router);
 
 async function start() {
   try {
@@ -28,4 +26,4 @@ async function start() {
   }
 }
 
-start()
+start();

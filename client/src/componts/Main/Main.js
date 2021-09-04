@@ -1,25 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact, loadContact, postContact } from '../../redux/features/contacts';
+import React, { useEffect, useState } from "react";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteContact,
+  loadContact,
+  postContact,
+} from "../../redux/features/contacts";
 import {
   Button,
-  Dialog, DialogActions,
+  Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  Fab, TextField,
-} from '@material-ui/core';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
-import EditContact from './EditContact';
+  Fab,
+  TextField,
+} from "@material-ui/core";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteSweepIcon from "@material-ui/icons/DeleteSweep";
+import EditContact from "./EditContact";
+import Preloader from '../Preloader/Preloader';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -33,12 +40,11 @@ const StyledTableCell = withStyles((theme) => ({
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
-    '&:nth-of-type(odd)': {
+    "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
   },
 }))(TableRow);
-
 
 const useStyles = makeStyles({
   table: {
@@ -46,27 +52,27 @@ const useStyles = makeStyles({
   },
 });
 
-
-
-
 function Main(props) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const classes = useStyles();
 
+  const preloader = useSelector((state) => state.contacts.loading)
   const contacts = useSelector((state) => {
     const { contacts } = state;
 
-    if(contacts.filter === '') {
-      return contacts.items
+    if (contacts.filter === "") {
+      return contacts.items;
     }
 
-    return contacts.items.filter(contact => {
-      return contact.name.toLowerCase().indexOf(contacts.filter.toLowerCase()) !== -1
-    })
-  })
+    return contacts.items.filter((contact) => {
+      return (
+        contact.name.toLowerCase().indexOf(contacts.filter.toLowerCase()) !== -1
+      );
+    });
+  });
 
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState('')
+  const [name, setName] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -77,30 +83,35 @@ function Main(props) {
   };
 
   useEffect(() => {
-    dispatch(loadContact())
-  }, [dispatch])
+    dispatch(loadContact());
+  }, [dispatch]);
 
   function handleDelete(id) {
     return dispatch(deleteContact(id));
   }
 
   function handleName(e) {
-    setName(e.target.value)
+    setName(e.target.value);
   }
 
+  const handlePostContact = () => {
+    dispatch(postContact({ name: name }));
+  };
 
-  const  handlePostContact = () => {
-    dispatch(postContact({name: name}))
+  if (preloader) {
+    return <Preloader/>
   }
-
-
   return (
     <>
-     <span>Добавить контакт</span> {' '}
-    <Fab variant="outlined" color="primary" onClick={handleClickOpen}>
-      <PersonAddIcon/>
-    </Fab>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <span>Добавить контакт</span>{" "}
+      <Fab variant="outlined" color="primary" onClick={handleClickOpen}>
+        <PersonAddIcon />
+      </Fab>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
         <DialogTitle id="form-dialog-title">Добавить новый контакт</DialogTitle>
         <DialogContent>
           <TextField
@@ -123,36 +134,45 @@ function Main(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell></StyledTableCell>
-            <StyledTableCell align="right">ФИО</StyledTableCell>
-            <StyledTableCell align="right"><EditIcon/></StyledTableCell>
-            <StyledTableCell align="right"><DeleteSweepIcon/></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {contacts.map((item, index ) => (
-            <StyledTableRow>
-              <StyledTableCell component="th" scope="row">
-                {index + 1}
-                {console.log(contacts)}
-              </StyledTableCell>
-              <StyledTableCell align="right">{item?.name}</StyledTableCell>
+      <TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell align="right">ФИО</StyledTableCell>
               <StyledTableCell align="right">
-               <EditContact contact={item}/>
+                <EditIcon />
               </StyledTableCell>
+              <StyledTableCell align="right">
+                <DeleteSweepIcon />
+              </StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {contacts.map((item, index) => (
+              <StyledTableRow>
+                <StyledTableCell component="th" scope="row">
+                  {index + 1}
+                  {console.log(contacts)}
+                </StyledTableCell>
+                <StyledTableCell align="right">{item?.name}</StyledTableCell>
                 <StyledTableCell align="right">
-                <Button variant="contained" color="secondary" onClick={() => handleDelete(item._id)} >
-                  удалить
-                </Button></StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                  <EditContact contact={item} />
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleDelete(item._id)}
+                  >
+                    удалить
+                  </Button>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 }

@@ -1,21 +1,21 @@
 const initialState = {
   items: [],
   loading: false,
-  filter: ''
+  filter: "",
 };
 
-export default function contactsReduser (state = initialState, action) {
+export default function contactsReduser(state = initialState, action) {
   switch (action.type) {
     case "contacts/load/pending":
-      return{
+      return {
         ...state,
-        loading: true
+        loading: true,
       };
     case "contacts/load/fulfilled":
       return {
         ...state,
         items: action.payload,
-        loading: false
+        loading: false,
       };
     case "contact/delete/pending":
       return {
@@ -24,7 +24,7 @@ export default function contactsReduser (state = initialState, action) {
     case "contact/delete/fulfilled":
       return {
         ...state,
-        items: state.items.filter(item => item._id !== action.payload)
+        items: state.items.filter((item) => item._id !== action.payload),
       };
 
     case "contact/create/pending":
@@ -37,7 +37,7 @@ export default function contactsReduser (state = initialState, action) {
       return {
         ...state,
         loading: true,
-        items: [action.payload]
+        items: [action.payload],
       };
     case "contact/edit/pending":
       return {
@@ -48,52 +48,50 @@ export default function contactsReduser (state = initialState, action) {
       return {
         ...state,
         editing: false,
-        items: state.items.map(item => {
-          if(item._id === action.payload.id) {
+        items: state.items.map((item) => {
+          if (item._id === action.payload.id) {
             return {
               ...item,
-              ...action.payload.data
-            }
+              ...action.payload.data,
+            };
           }
-          return item
-        })
+          return item;
+        }),
       };
     case "contact/filter/fulfilled":
       return {
         ...state,
-        filter: action.payload
+        filter: action.payload,
       };
 
     default:
-      return state
+      return state;
   }
 }
 
 export const loadContact = () => {
   return async (dispatch) => {
-    dispatch({type: "contacts/load/pending" });
-    const res = await fetch('http://localhost:5500/contact');
-    const json = await res.json()
-    dispatch({type: "contacts/load/fulfilled", payload: json})
-  }
-}
-
+    dispatch({ type: "contacts/load/pending" });
+    const res = await fetch("http://localhost:5500/contact");
+    const json = await res.json();
+    dispatch({ type: "contacts/load/fulfilled", payload: json });
+  };
+};
 
 export const deleteContact = (id) => {
   return async (dispatch) => {
-    dispatch({type: "contact/delete/pending"});
+    dispatch({ type: "contact/delete/pending" });
     await fetch(`http://localhost:5500/contact/delete/${id}`, {
-      method: "DELETE"
+      method: "DELETE",
     });
 
-   dispatch({type: "contact/delete/fulfilled", payload: id })
-  }
-}
-
+    dispatch({ type: "contact/delete/fulfilled", payload: id });
+  };
+};
 
 export const postContact = (data) => {
-  return  async (dispatch) => {
-    dispatch({type: "contact/create/pending"});
+  return async (dispatch) => {
+    dispatch({ type: "contact/create/pending" });
 
     const res = await fetch("http://localhost:5500/contact/post", {
       method: "POST",
@@ -101,39 +99,39 @@ export const postContact = (data) => {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        name: data.name
-      })
-    });
-    const json = await res.json()
-    dispatch({
-      type: "contact/create/fulfilled",
-      payload: json
-    })
-    window.location.reload()
-  }
-}
-
-export const editContact = (id,data) => {
-  return async (dispatch) => {
-    dispatch({type: "contact/edit/pending"});
-
-    await fetch(`http://localhost:5500/contact/edit/${id}`,{
-      method: "PATCH",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8"
-      },
-      body: JSON.stringify({
-        name: data.fullName
+        name: data.name,
       }),
     });
-    dispatch({ type: "contact/edit/fulfilled", payload: {id, data}});
-    window.location.reload()
-  }
-}
+    const json = await res.json();
+    dispatch({
+      type: "contact/create/fulfilled",
+      payload: json,
+    });
+    window.location.reload();
+  };
+};
 
-export const setFilterText = text => {
+export const editContact = (id, data) => {
+  return async (dispatch) => {
+    dispatch({ type: "contact/edit/pending" });
+
+    await fetch(`http://localhost:5500/contact/edit/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify({
+        name: data.fullName,
+      }),
+    });
+    dispatch({ type: "contact/edit/fulfilled", payload: { id, data } });
+    window.location.reload();
+  };
+};
+
+export const setFilterText = (text) => {
   return {
     type: "contact/filter/fulfilled",
-    payload: text
-  }
-}
+    payload: text,
+  };
+};
