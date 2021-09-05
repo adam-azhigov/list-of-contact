@@ -8,6 +8,12 @@
     "dev": "concurrently \"nodemon index\" \"cd client && npm start\"",
     "deploy": "gh-pages -d build"
   },
+  "eslintConfig": {
+    "extends": [
+      "airbnb/base",
+      "prettier"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
