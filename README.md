@@ -3,6 +3,6 @@
 • удаление  
 • добавление  
 • изменение
-• поиск
+• поиск  
 
 ![](https://github.com/adam-azhigov/list-of-contact/blob/main/gitApp.gif)
