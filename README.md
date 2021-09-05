@@ -5,4 +5,4 @@
 • изменение  
 • поиск     
 
-![](https://github.com/adam-azhigov/list-of-contact/blob/main/gitApp.gif)
+![](https://github.com/adam-azhigov/list-of-contact/blob/main/gifApp.gif)
